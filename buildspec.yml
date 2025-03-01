@@ -1,40 +1,21 @@
 version: 0.2
-
 env:
   parameter-store:
     DOCKER_REGISTRY_USERNAME: /myapp/docker-credentials/username
     DOCKER_REGISTRY_PASSWORD: /myapp/docker-credentials/password
 
 phases:
-  install:
-    runtime-versions:
-      nodejs: 16
-    commands:
-      - echo "Installing Node.js dependencies..."
-      - npm install
-
   pre_build:
     commands:
-      - set -e
-      - echo "Logging in to Docker Registry..."
+      - echo "Logging in to DockerHub..."
       - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
-      - IMAGE_REPO_NAME="tws-online-shop-app-demo"
-      - IMAGE_NAME="$DOCKER_REGISTRY_USERNAME/$IMAGE_REPO_NAME"
 
   build:
     commands:
-      - set -e
-      - echo "Build started on `date`"
-      - docker build -t $IMAGE_NAME:latest .
+      - echo "Building Docker image..."
+      - docker build -t dockerarun1234/tws-online-shop-app-demo:latest .
 
   post_build:
     commands:
-      - set -e
-      - echo "Pushing the Docker image..."
-      - docker push $IMAGE_NAME:latest
-
-artifacts:
-  files:
-    - '**/*'
-  discard-paths: no
-
+      - echo "Pushing Docker image to DockerHub..."
+      - docker push dockerarun1234/tws-online-shop-app-demo:latest
