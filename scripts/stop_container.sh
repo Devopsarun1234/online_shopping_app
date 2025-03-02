@@ -1,10 +1,8 @@
 #!/bin/bash
-  set -e
+set -e
 
-  # Stop any running Docker container
-  containerid=$(docker ps -q)
-  if [ -n "$containerid" ]; then
-    docker stop $containerid && docker rm -f $containerid
-  else
-    echo "No running containers to remove."
-  fi
+CONTAINER_NAME="online-shop-app"
+
+echo "Stopping existing container..."
+docker stop $CONTAINER_NAME || true
+docker rm $CONTAINER_NAME || true
