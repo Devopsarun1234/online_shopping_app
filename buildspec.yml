@@ -1,21 +1,16 @@
 version: 0.2
 env:
   parameter-store:
-    DOCKER_REGISTRY_USERNAME: "/myapp/docker-credentials/username"
-    DOCKER_REGISTRY_PASSWORD: "/myapp/docker-credentials/passwd"
+    DOCKER_REGISTRY_USERNAME: /myapp/docker-credentials/username
+    DOCKER_REGISTRY_PASSWORD: /myapp/docker-credentials/password
 
 phases:
   install:
-    runtime-versions:
-      docker: 20
     commands:
       - apt update -y
       - apt install -y docker.io
   pre_build:
     commands:
-      - echo "Retrieving DockerHub credentials from SSM..."
-      - export DOCKER_REGISTRY_PASSWORD=$(aws ssm get-parameter --name "/myapp/docker-credentials/passwd" --with-decryption --query "Parameter.Value" --output text)
-      - export DOCKER_REGISTRY_USERNAME=$(aws ssm get-parameter --name "/myapp/docker-credentials/username" --query "Parameter.Value" --output text)
       - echo "Logging into DockerHub..."
       - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
   build:
@@ -28,4 +23,3 @@ phases:
       - docker push dockerarun1234/tws-online-shop-app-demo:latest
 artifacts:
   files: '**/*'
-
