@@ -5,21 +5,17 @@ env:
     DOCKER_REGISTRY_PASSWORD: /myapp/docker-credentials/password
 
 phases:
-  install:
-    commands:
-      - apt update -y
-      - apt install -y docker.io
   pre_build:
     commands:
-      - echo "Logging into DockerHub..."
+      - echo "Logging in to DockerHub..."
       - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
+
   build:
     commands:
       - echo "Building Docker image..."
       - docker build -t dockerarun1234/tws-online-shop-app-demo:latest .
+
   post_build:
     commands:
       - echo "Pushing Docker image to DockerHub..."
       - docker push dockerarun1234/tws-online-shop-app-demo:latest
-artifacts:
-  files: '**/*'
